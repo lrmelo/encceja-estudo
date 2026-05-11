@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ENCCEJA 2020</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <p class="eyebrow">ENCCEJA 2020</p>
+          <h1 class="app-title">Pratica de Provas</h1>
+          <p class="app-subtitle">Treine as tres provas objetivas com correcao imediata.</p>
+        </div>
+
+        <section class="summary-strip" aria-label="Resumo de progresso">
+          <div class="summary-metric">
+            <span class="metric-label">Respondidas</span>
+            <strong id="answered-count">0/90</strong>
+          </div>
+          <div class="summary-metric">
+            <span class="metric-label">Acertos</span>
+            <strong id="correct-count">0</strong>
+          </div>
+          <div class="summary-metric">
+            <span class="metric-label">Taxa</span>
+            <strong id="accuracy-rate">0%</strong>
+          </div>
+        </section>
+
+        <nav id="exam-nav" class="exam-nav" aria-label="Provas"></nav>
+
+        <section class="question-map-section">
+          <div class="section-heading">
+            <h2>Questoes</h2>
+            <span id="current-exam-label" class="section-label"></span>
+          </div>
+          <div id="question-map" class="question-map" aria-label="Mapa de questoes"></div>
+        </section>
+      </aside>
+
+      <main class="main-content">
+        <section id="quiz-view" class="quiz-view">
+          <header class="question-header">
+            <div>
+              <p id="question-context" class="question-context"></p>
+              <h2 id="question-title" class="question-title"></h2>
+            </div>
+            <div class="question-meta">
+              <span id="page-badge" class="badge"></span>
+            </div>
+          </header>
+
+          <div class="question-layout">
+            <section class="question-panel" aria-live="polite">
+              <div id="feedback" class="feedback" hidden></div>
+              <div id="question-stem" class="question-stem"></div>
+              <div id="options" class="options"></div>
+            </section>
+
+            <aside class="reference-panel">
+              <div class="reference-header">
+                <h2>Pagina da prova</h2>
+                <button id="zoom-button" class="secondary-button" type="button">Ampliar</button>
+              </div>
+              <button id="page-preview-button" class="page-preview-button" type="button">
+                <img id="page-preview" class="page-preview" alt="Pagina original da prova" />
+              </button>
+            </aside>
+          </div>
+
+          <footer class="control-bar">
+            <button id="previous-button" class="secondary-button" type="button">Anterior</button>
+            <button id="confirm-button" class="primary-button" type="button">Confirmar</button>
+            <button id="next-button" class="primary-button" type="button">Proxima</button>
+          </footer>
+        </section>
+
+        <section id="summary-view" class="summary-view" hidden></section>
+      </main>
+    </div>
+
+    <dialog id="image-dialog" class="image-dialog">
+      <div class="dialog-header">
+        <p id="dialog-title" class="dialog-title"></p>
+        <button id="close-dialog-button" class="secondary-button" type="button">Fechar</button>
+      </div>
+      <img id="dialog-image" class="dialog-image" alt="Pagina ampliada da prova" />
+    </dialog>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
