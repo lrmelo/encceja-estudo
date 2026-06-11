@@ -1,129 +1,131 @@
 # ENCCEJA 2020 - Aplicacao de Pratica
 
-Aplicacao local para praticar 3 provas objetivas do ENCCEJA 2020:
+Este projeto abre uma aplicacao no navegador para praticar 3 provas do ENCCEJA 2020:
 
 - Ciencias da Natureza
 - Linguagens
 - Matematica
 
-O usuario navega questao por questao, marca uma alternativa, confirma a resposta e recebe a correcao imediata com base no gabarito. Ao final, a aplicacao mostra um resumo da taxa de acerto geral e por prova.
+Funciona assim:
 
-## Requisitos
+1. a pessoa abre a prova
+2. marca a alternativa que considera correta
+3. clica em confirmar
+4. a aplicacao informa se acertou ou errou
+5. no final mostra o total de acertos e a taxa de aproveitamento
 
-- Node.js `>=20.16.0 <21` ou `>=22.3.0`
-- npm
+Tambem existe uma imagem da pagina original da prova ao lado da questao, o que ajuda quando a pergunta usa grafico, figura, tabela ou diagrama.
 
-Se quiser evitar incompatibilidade, use Node.js 22 LTS.
+---
 
-## Como subir localmente
+## Antes de comecar
 
-### 1. Entrar na pasta do projeto
+Para usar este projeto no Windows, voce precisa ter:
 
-```bash
-cd Encceja
+- Windows 10 ou Windows 11
+- Node.js instalado no computador
+
+### Como saber se o Node.js ja esta instalado
+
+Abra o PowerShell e rode:
+
+```powershell
+node -v
 ```
 
-### 2. Instalar as dependencias
+Se aparecer um numero de versao, por exemplo `v22.15.0`, pode continuar.
 
-```bash
-npm install
+Se aparecer algo como "node nao e reconhecido", sera preciso instalar o Node.js primeiro.
+
+### Qual versao instalar
+
+Use de preferencia o **Node.js 22 LTS**.
+
+Depois de instalar, feche e abra o PowerShell novamente antes de continuar.
+
+---
+
+## Como abrir o projeto no Windows
+
+Se o projeto ja estiver baixado no seu computador:
+
+1. abra a pasta do projeto
+2. clique na barra de endereco da pasta
+3. digite `powershell`
+4. pressione `Enter`
+
+Isso abre o PowerShell ja dentro da pasta correta do projeto.
+
+Voce deve estar vendo algo parecido com isto:
+
+```powershell
+PS C:\Users\SeuNome\...\Encceja>
 ```
 
-### 3. Gerar a base de dados a partir dos PDFs
+---
 
-Esse passo:
+## Passo a passo para rodar a aplicacao
 
-- le os PDFs das provas e dos gabaritos
-- extrai questoes e respostas
-- gera o arquivo `public/data/exams.json`
-- gera as imagens das paginas usadas na interface
+### Passo 1 - Instalar as dependencias
 
-```bash
-npm run build:data
+No Windows, use este comando:
+
+```powershell
+npm.cmd install
 ```
 
-### 4. Subir o servidor local
+Esse passo baixa tudo o que a aplicacao precisa para funcionar.
 
-```bash
-npm run dev
+Pode demorar alguns minutos na primeira vez.
+
+### Passo 2 - Gerar a base da aplicacao
+
+Agora rode:
+
+```powershell
+npm.cmd run build:data
 ```
 
-O terminal vai exibir algo como:
+Esse comando:
+
+- le os PDFs da prova
+- le os PDFs do gabarito
+- monta as questoes da aplicacao
+- cria as imagens das paginas usadas na interface
+
+Quando terminar, a pasta `public/data` e a pasta `public/assets/pages` estarao prontas.
+
+### Passo 3 - Iniciar a aplicacao
+
+Rode:
+
+```powershell
+npm.cmd run dev
+```
+
+Se estiver tudo certo, vai aparecer algo parecido com isto:
 
 ```text
 Aplicacao disponivel em http://localhost:3000
 ```
 
-Abra essa URL no navegador.
+### Passo 4 - Abrir no navegador
 
-## Fluxo rapido para outra pessoa
+Copie e abra no navegador o endereco mostrado no terminal.
 
-Se a pessoa receber o projeto completo, estes comandos bastam:
-
-```bash
-npm install
-npm run build:data
-npm run dev
-```
-
-## Estrutura principal
+Normalmente sera:
 
 ```text
-Encceja/
-  2020_PV_*.pdf                  # provas
-  2020_GB_*.pdf                  # gabaritos
-  public/
-    index.html                   # pagina principal
-    data/exams.json              # base gerada pelo script
-    assets/pages/                # imagens das paginas das provas
-    js/
-      app.js
-      modules/
-        data-service.js
-        quiz-store.js
-        ui.js
-    styles/
-      main.css
-  scripts/
-    build-data.js                # extracao dos PDFs + geracao da base
-  server.js                      # servidor local
-  package.json
+http://localhost:3000
 ```
 
-## Scripts disponiveis
+Se aparecer outra porta, como `3001` ou `3002`, abra exatamente a que apareceu no terminal.
 
-### `npm run build:data`
+---
 
-Regenera a base da aplicacao a partir dos PDFs.
+## Resumo rapido
 
-Use esse comando quando:
-
-- trocar os arquivos PDF
-- atualizar prova ou gabarito
-- quiser recriar `public/data/exams.json` e as imagens
-
-### `npm run dev`
-
-Sobe o servidor local.
-
-### `npm start`
-
-Mesmo comportamento do `npm run dev`.
-
-## Observacoes importantes
-
-- A aplicacao usa os PDFs que estao na raiz do projeto.
-- Se a porta `3000` estiver ocupada, o servidor tenta a proxima porta automaticamente.
-- O progresso do usuario fica salvo no `localStorage` do navegador.
-- Algumas questoes possuem figuras, graficos ou alternativas visuais. Nesses casos, a interface mostra a pagina original da prova ao lado da questao.
-
-## Solucao de problemas
-
-### PowerShell bloqueando `npm`
-
-Em alguns ambientes Windows, o PowerShell pode bloquear `npm` por policy de execucao de script.
-
-Se isso acontecer, rode:
+Se quiser apenas copiar e colar os comandos principais:
 
 ```powershell
 npm.cmd install
@@ -131,32 +133,266 @@ npm.cmd run build:data
 npm.cmd run dev
 ```
 
-### A aplicacao abriu, mas nao carregou as questoes
+Depois abra no navegador:
 
-Verifique se o arquivo abaixo existe:
+```text
+http://localhost:3000
+```
+
+Ou a porta que aparecer no terminal.
+
+---
+
+## Importante
+
+### Nao feche o terminal enquanto estiver usando a aplicacao
+
+Se fechar o PowerShell, a aplicacao para de funcionar.
+
+### Nao abra o `index.html` com duplo clique
+
+Esta aplicacao precisa ser aberta pelo servidor local.
+
+Ou seja, o jeito certo e:
+
+1. rodar `npm.cmd run dev`
+2. abrir `http://localhost:3000` no navegador
+
+### O progresso fica salvo no navegador
+
+Se a pessoa responder algumas questoes e fechar o navegador, ao abrir de novo o progresso pode continuar salvo.
+
+---
+
+## Quando voce precisa rodar cada comando
+
+### `npm.cmd install`
+
+Use quando:
+
+- for a primeira vez usando o projeto
+- a pasta `node_modules` nao existir
+- alguem acabou de baixar o projeto do Git
+
+### `npm.cmd run build:data`
+
+Use quando:
+
+- for a primeira vez montando a aplicacao
+- os PDFs tiverem sido trocados
+- o arquivo `public/data/exams.json` nao existir
+- a aplicacao abrir sem carregar as questoes
+
+### `npm.cmd run dev`
+
+Use sempre que quiser abrir a aplicacao.
+
+---
+
+## Quais arquivos nao devem ser removidos
+
+Para a aplicacao funcionar, estes PDFs precisam continuar na pasta principal do projeto:
+
+- `2020_GB_EM_ciencias_natureza.pdf`
+- `2020_GB_EM_linguagens.pdf`
+- `2020_GB_EM_matematica.pdf`
+- `2020_PV_EM_ciencias_natureza.pdf`
+- `2020_PV_EM_linguagens.pdf`
+- `2020_PV_EM_matematica.pdf.pdf`
+
+Se algum deles for apagado, renomeado ou movido, o comando `build:data` pode falhar.
+
+---
+
+## Problemas comuns no Windows
+
+### 1. "npm nao e reconhecido" ou "node nao e reconhecido"
+
+Isso normalmente significa que o Node.js nao esta instalado, ou foi instalado e o terminal antigo ainda esta aberto.
+
+O que fazer:
+
+1. instale o Node.js 22 LTS
+2. feche o PowerShell
+3. abra o PowerShell novamente
+4. teste:
+
+```powershell
+node -v
+npm.cmd -v
+```
+
+Se os dois mostrarem numero de versao, tente novamente.
+
+---
+
+### 2. Erro do PowerShell com `npm.ps1`
+
+Exemplo do erro:
+
+```text
+npm : O arquivo C:\Program Files\nodejs\npm.ps1 nao pode ser carregado...
+```
+
+Isso acontece porque o PowerShell bloqueia scripts `.ps1` em alguns computadores.
+
+Por isso, neste projeto, prefira usar:
+
+```powershell
+npm.cmd install
+npm.cmd run build:data
+npm.cmd run dev
+```
+
+Em vez de:
+
+```powershell
+npm install
+npm run build:data
+npm run dev
+```
+
+`npm.cmd` resolve esse problema na maioria dos casos.
+
+---
+
+### 3. A aplicacao abriu, mas as questoes nao carregaram
+
+Normalmente isso acontece quando a base ainda nao foi gerada.
+
+Rode:
+
+```powershell
+npm.cmd run build:data
+```
+
+Se continuar com problema, verifique se este arquivo existe:
 
 ```text
 public/data/exams.json
 ```
 
-Se nao existir, rode:
+E verifique tambem se os PDFs ainda estao na pasta principal do projeto.
 
-```bash
-npm run build:data
+---
+
+### 4. O navegador nao abre sozinho
+
+Isso e normal.
+
+Copie manualmente o endereco que apareceu no terminal, por exemplo:
+
+```text
+http://localhost:3000
 ```
 
-### Troquei os PDFs e quero atualizar tudo
+Cole no navegador e pressione `Enter`.
 
-Depois de substituir os PDFs na raiz do projeto, rode:
+---
 
-```bash
-npm run build:data
+### 5. `http://localhost:3000` nao abriu
+
+Veja o que o terminal mostrou depois de rodar:
+
+```powershell
+npm.cmd run dev
 ```
 
-## Como encerrar
+Se ele escreveu:
 
-Para parar o servidor local, volte ao terminal e pressione:
+```text
+Aplicacao disponivel em http://localhost:3001
+```
+
+entao a porta correta e `3001`, nao `3000`.
+
+Abra exatamente o endereco mostrado.
+
+---
+
+### 6. Troquei os PDFs e quero atualizar a aplicacao
+
+Depois de trocar os PDFs, rode novamente:
+
+```powershell
+npm.cmd run build:data
+```
+
+Isso recria a base e as imagens da aplicacao com os arquivos novos.
+
+---
+
+### 7. Fechei o terminal e a aplicacao parou
+
+Isso tambem e normal.
+
+O servidor local roda dentro do terminal. Se o terminal for fechado, a aplicacao sai do ar.
+
+Basta abrir o PowerShell na pasta do projeto e rodar de novo:
+
+```powershell
+npm.cmd run dev
+```
+
+---
+
+### 8. Quero zerar tudo e recomecar
+
+Existem duas formas:
+
+### Pela propria aplicacao
+
+No resumo final existe a opcao de reiniciar.
+
+### Pelo navegador
+
+Se quiser apagar o progresso salvo, limpe os dados do site no navegador ou abra a aplicacao em janela anonima.
+
+---
+
+## Como encerrar a aplicacao
+
+Quando terminar de usar:
+
+1. volte para a janela do PowerShell
+2. pressione:
 
 ```text
 Ctrl + C
 ```
+
+3. se o terminal perguntar algo, confirme
+
+---
+
+## Estrutura basica do projeto
+
+Voce nao precisa mexer nesses arquivos para usar a aplicacao, mas eles sao os principais:
+
+```text
+Encceja/
+  2020_PV_*.pdf
+  2020_GB_*.pdf
+  public/
+    index.html
+    data/exams.json
+    assets/pages/
+    js/
+    styles/
+  scripts/
+    build-data.js
+  server.js
+  package.json
+```
+
+---
+
+## Comandos principais
+
+```powershell
+npm.cmd install
+npm.cmd run build:data
+npm.cmd run dev
+```
+
+Se a pessoa seguir esses passos nessa ordem, a aplicacao deve funcionar normalmente no Windows.
