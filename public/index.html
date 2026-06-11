@@ -12,7 +12,7 @@
         <div class="sidebar-top">
           <p class="eyebrow">ENCCEJA 2020</p>
           <h1 class="app-title">Pratica de Provas</h1>
-          <p class="app-subtitle">Treine as tres provas objetivas com correcao imediata.</p>
+          <p class="app-subtitle">Treine as tres provas objetivas e escolha quando ver o gabarito.</p>
         </div>
 
         <section class="summary-strip" aria-label="Resumo de progresso">
@@ -21,13 +21,41 @@
             <strong id="answered-count">0/90</strong>
           </div>
           <div class="summary-metric">
-            <span class="metric-label">Acertos</span>
+            <span id="correct-label" class="metric-label">Acertos</span>
             <strong id="correct-count">0</strong>
           </div>
           <div class="summary-metric">
-            <span class="metric-label">Taxa</span>
+            <span id="accuracy-label" class="metric-label">Taxa</span>
             <strong id="accuracy-rate">0%</strong>
           </div>
+        </section>
+
+        <section class="mode-panel" aria-label="Modo de correcao">
+          <div class="section-heading">
+            <h2>Correcao</h2>
+            <span class="section-label">Escolha quando ver o gabarito</span>
+          </div>
+
+          <div class="mode-toggle" role="group" aria-label="Modo de correcao">
+            <button
+              id="mode-immediate-button"
+              class="mode-toggle-button"
+              type="button"
+              data-mode="immediate"
+            >
+              Mostrar na hora
+            </button>
+            <button
+              id="mode-exam-end-button"
+              class="mode-toggle-button"
+              type="button"
+              data-mode="exam-end"
+            >
+              Mostrar no fim da prova
+            </button>
+          </div>
+
+          <p id="mode-help" class="mode-help"></p>
         </section>
 
         <nav id="exam-nav" class="exam-nav" aria-label="Provas"></nav>
@@ -38,6 +66,17 @@
             <span id="current-exam-label" class="section-label"></span>
           </div>
           <div id="question-map" class="question-map" aria-label="Mapa de questoes"></div>
+        </section>
+
+        <section class="sidebar-actions-section">
+          <div class="section-heading">
+            <h2>Acoes</h2>
+            <span class="section-label">Prova atual</span>
+          </div>
+          <button id="reset-current-exam-button" class="secondary-button sidebar-action-button" type="button">
+            Reiniciar esta prova
+          </button>
+          <p id="reset-current-exam-help" class="mode-help"></p>
         </section>
       </aside>
 

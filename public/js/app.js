@@ -17,7 +17,7 @@ main().catch((error) => {
     <main style="padding: 32px; font-family: Arial, sans-serif;">
       <h1>Falha ao carregar a aplicacao</h1>
       <p>${error.message}</p>
-      <p>Execute <code>npm run build:data</code> e recarregue a pagina.</p>
+      <p>Execute <code>npm.cmd run build:data</code> e recarregue a pagina.</p>
     </main>
   `;
 });
