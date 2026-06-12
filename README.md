@@ -1,31 +1,31 @@
-# ENCCEJA 2020 - Aplicacao de Pratica
+# ENCCEJA 2020 - Aplicação de Prática
 
-Este projeto abre uma aplicacao no navegador para praticar 3 provas do ENCCEJA 2020:
+Este projeto abre uma aplicação no navegador para praticar 3 provas do ENCCEJA 2020:
 
-- Ciencias da Natureza
+- Ciências da Natureza
 - Linguagens
-- Matematica
+- Matemática
 
 Funciona assim:
 
 1. a pessoa abre a prova
 2. marca a alternativa que considera correta
 3. clica em confirmar
-4. a aplicacao informa se acertou ou errou
+4. a aplicação informa se acertou ou errou
 5. no final mostra o total de acertos e a taxa de aproveitamento
 
-Tambem existe uma imagem da pagina original da prova ao lado da questao, o que ajuda quando a pergunta usa grafico, figura, tabela ou diagrama.
+Também existe uma imagem da página original da prova ao lado da questão, o que ajuda quando a pergunta usa gráfico, figura, tabela ou diagrama.
 
 ---
 
-## Antes de comecar
+## Antes de começar
 
-Para usar este projeto no Windows, voce precisa ter:
+Para usar este projeto no Windows, você precisa ter:
 
 - Windows 10 ou Windows 11
 - Node.js instalado no computador
 
-### Como saber se o Node.js ja esta instalado
+### Como saber se o Node.js já está instalado
 
 Abra o PowerShell e rode:
 
@@ -33,13 +33,13 @@ Abra o PowerShell e rode:
 node -v
 ```
 
-Se aparecer um numero de versao, por exemplo `v22.15.0`, pode continuar.
+Se aparecer um número de versão, por exemplo `v22.15.0`, pode continuar.
 
-Se aparecer algo como "node nao e reconhecido", sera preciso instalar o Node.js primeiro.
+Se aparecer algo como "node não é reconhecido", será preciso instalar o Node.js primeiro.
 
-### Qual versao instalar
+### Qual versão instalar
 
-Use de preferencia o **Node.js 22 LTS**.
+Use de preferência o **Node.js 22 LTS**.
 
 Depois de instalar, feche e abra o PowerShell novamente antes de continuar.
 
@@ -47,16 +47,16 @@ Depois de instalar, feche e abra o PowerShell novamente antes de continuar.
 
 ## Como abrir o projeto no Windows
 
-Se o projeto ja estiver baixado no seu computador:
+Se o projeto já estiver baixado no seu computador:
 
 1. abra a pasta do projeto
-2. clique na barra de endereco da pasta
+2. clique na barra de endereço da pasta
 3. digite `powershell`
 4. pressione `Enter`
 
-Isso abre o PowerShell ja dentro da pasta correta do projeto.
+Isso abre o PowerShell já dentro da pasta correta do projeto.
 
-Voce deve estar vendo algo parecido com isto:
+Você deve estar vendo algo parecido com isto:
 
 ```powershell
 PS C:\Users\SeuNome\...\Encceja>
@@ -64,9 +64,9 @@ PS C:\Users\SeuNome\...\Encceja>
 
 ---
 
-## Passo a passo para rodar a aplicacao
+## Passo a passo para rodar a aplicação
 
-### Passo 1 - Instalar as dependencias
+### Passo 1 - Instalar as dependências
 
 No Windows, use este comando:
 
@@ -74,11 +74,11 @@ No Windows, use este comando:
 npm.cmd install
 ```
 
-Esse passo baixa tudo o que a aplicacao precisa para funcionar.
+Esse passo baixa tudo o que a aplicação precisa para funcionar.
 
 Pode demorar alguns minutos na primeira vez.
 
-### Passo 2 - Gerar a base da aplicacao
+### Passo 2 - Gerar a base da aplicação
 
 Agora rode:
 
@@ -88,14 +88,14 @@ npm.cmd run build:data
 
 Esse comando:
 
-- le os PDFs da prova
-- le os PDFs do gabarito
-- monta as questoes da aplicacao
-- cria as imagens das paginas usadas na interface
+- lê os PDFs da prova
+- lê os PDFs do gabarito
+- monta as questões da aplicação
+- cria as imagens das páginas usadas na interface
 
-Quando terminar, a pasta `public/data` e a pasta `public/assets/pages` estarao prontas.
+Quando terminar, a pasta `public/data` e a pasta `public/assets/pages` estarão prontas.
 
-### Passo 3 - Iniciar a aplicacao
+### Passo 3 - Iniciar a aplicação
 
 Rode:
 
@@ -106,14 +106,14 @@ npm.cmd run dev
 Se estiver tudo certo, vai aparecer algo parecido com isto:
 
 ```text
-Aplicacao disponivel em http://localhost:3000
+Aplicação disponível em http://localhost:3000
 ```
 
 ### Passo 4 - Abrir no navegador
 
-Copie e abra no navegador o endereco mostrado no terminal.
+Copie e abra no navegador o endereço mostrado no terminal.
 
-Normalmente sera:
+Normalmente será:
 
 ```text
 http://localhost:3000
@@ -123,7 +123,7 @@ Se aparecer outra porta, como `3001` ou `3002`, abra exatamente a que apareceu n
 
 ---
 
-## Resumo rapido
+## Resumo rápido
 
 Se quiser apenas copiar e colar os comandos principais:
 
@@ -145,53 +145,53 @@ Ou a porta que aparecer no terminal.
 
 ## Importante
 
-### Nao feche o terminal enquanto estiver usando a aplicacao
+### Não feche o terminal enquanto estiver usando a aplicação
 
-Se fechar o PowerShell, a aplicacao para de funcionar.
+Se fechar o PowerShell, a aplicação para de funcionar.
 
-### Nao abra o `index.html` com duplo clique
+### Não abra o `index.html` com duplo clique
 
-Esta aplicacao precisa ser aberta pelo servidor local.
+Esta aplicação precisa ser aberta pelo servidor local.
 
-Ou seja, o jeito certo e:
+Ou seja, o jeito certo é:
 
 1. rodar `npm.cmd run dev`
 2. abrir `http://localhost:3000` no navegador
 
 ### O progresso fica salvo no navegador
 
-Se a pessoa responder algumas questoes e fechar o navegador, ao abrir de novo o progresso pode continuar salvo.
+Se a pessoa responder algumas questões e fechar o navegador, ao abrir de novo o progresso pode continuar salvo.
 
 ---
 
-## Quando voce precisa rodar cada comando
+## Quando você precisa rodar cada comando
 
 ### `npm.cmd install`
 
 Use quando:
 
 - for a primeira vez usando o projeto
-- a pasta `node_modules` nao existir
-- alguem acabou de baixar o projeto do Git
+- a pasta `node_modules` não existir
+- alguém acabou de baixar o projeto do Git
 
 ### `npm.cmd run build:data`
 
 Use quando:
 
-- for a primeira vez montando a aplicacao
+- for a primeira vez montando a aplicação
 - os PDFs tiverem sido trocados
-- o arquivo `public/data/exams.json` nao existir
-- a aplicacao abrir sem carregar as questoes
+- o arquivo `public/data/exams.json` não existir
+- a aplicação abrir sem carregar as questões
 
 ### `npm.cmd run dev`
 
-Use sempre que quiser abrir a aplicacao.
+Use sempre que quiser abrir a aplicação.
 
 ---
 
-## Quais arquivos nao devem ser removidos
+## Quais arquivos não devem ser removidos
 
-Para a aplicacao funcionar, estes PDFs precisam continuar na pasta principal do projeto:
+Para a aplicação funcionar, estes PDFs precisam continuar na pasta principal do projeto:
 
 - `2020_GB_EM_ciencias_natureza.pdf`
 - `2020_GB_EM_linguagens.pdf`
@@ -206,9 +206,9 @@ Se algum deles for apagado, renomeado ou movido, o comando `build:data` pode fal
 
 ## Problemas comuns no Windows
 
-### 1. "npm nao e reconhecido" ou "node nao e reconhecido"
+### 1. "npm não é reconhecido" ou "node não é reconhecido"
 
-Isso normalmente significa que o Node.js nao esta instalado, ou foi instalado e o terminal antigo ainda esta aberto.
+Isso normalmente significa que o Node.js não está instalado, ou foi instalado e o terminal antigo ainda está aberto.
 
 O que fazer:
 
@@ -222,7 +222,7 @@ node -v
 npm.cmd -v
 ```
 
-Se os dois mostrarem numero de versao, tente novamente.
+Se os dois mostrarem número de versão, tente novamente.
 
 ---
 
@@ -231,7 +231,7 @@ Se os dois mostrarem numero de versao, tente novamente.
 Exemplo do erro:
 
 ```text
-npm : O arquivo C:\Program Files\nodejs\npm.ps1 nao pode ser carregado...
+npm : O arquivo C:\Program Files\nodejs\npm.ps1 não pode ser carregado...
 ```
 
 Isso acontece porque o PowerShell bloqueia scripts `.ps1` em alguns computadores.
@@ -256,9 +256,9 @@ npm run dev
 
 ---
 
-### 3. A aplicacao abriu, mas as questoes nao carregaram
+### 3. A aplicação abriu, mas as questões não carregaram
 
-Normalmente isso acontece quando a base ainda nao foi gerada.
+Normalmente isso acontece quando a base ainda não foi gerada.
 
 Rode:
 
@@ -272,15 +272,15 @@ Se continuar com problema, verifique se este arquivo existe:
 public/data/exams.json
 ```
 
-E verifique tambem se os PDFs ainda estao na pasta principal do projeto.
+E verifique também se os PDFs ainda estão na pasta principal do projeto.
 
 ---
 
-### 4. O navegador nao abre sozinho
+### 4. O navegador não abre sozinho
 
-Isso e normal.
+Isso é normal.
 
-Copie manualmente o endereco que apareceu no terminal, por exemplo:
+Copie manualmente o endereço que apareceu no terminal, por exemplo:
 
 ```text
 http://localhost:3000
@@ -290,7 +290,7 @@ Cole no navegador e pressione `Enter`.
 
 ---
 
-### 5. `http://localhost:3000` nao abriu
+### 5. `http://localhost:3000` não abriu
 
 Veja o que o terminal mostrou depois de rodar:
 
@@ -301,16 +301,16 @@ npm.cmd run dev
 Se ele escreveu:
 
 ```text
-Aplicacao disponivel em http://localhost:3001
+Aplicação disponível em http://localhost:3001
 ```
 
-entao a porta correta e `3001`, nao `3000`.
+então a porta correta é `3001`, não `3000`.
 
-Abra exatamente o endereco mostrado.
+Abra exatamente o endereço mostrado.
 
 ---
 
-### 6. Troquei os PDFs e quero atualizar a aplicacao
+### 6. Troquei os PDFs e quero atualizar a aplicação
 
 Depois de trocar os PDFs, rode novamente:
 
@@ -318,15 +318,15 @@ Depois de trocar os PDFs, rode novamente:
 npm.cmd run build:data
 ```
 
-Isso recria a base e as imagens da aplicacao com os arquivos novos.
+Isso recria a base e as imagens da aplicação com os arquivos novos.
 
 ---
 
-### 7. Fechei o terminal e a aplicacao parou
+### 7. Fechei o terminal e a aplicação parou
 
-Isso tambem e normal.
+Isso também é normal.
 
-O servidor local roda dentro do terminal. Se o terminal for fechado, a aplicacao sai do ar.
+O servidor local roda dentro do terminal. Se o terminal for fechado, a aplicação sai do ar.
 
 Basta abrir o PowerShell na pasta do projeto e rodar de novo:
 
@@ -336,21 +336,21 @@ npm.cmd run dev
 
 ---
 
-### 8. Quero zerar tudo e recomecar
+### 8. Quero zerar tudo e recomeçar
 
 Existem duas formas:
 
-### Pela propria aplicacao
+### Pela própria aplicação
 
-No resumo final existe a opcao de reiniciar.
+No resumo final existe a opção de reiniciar.
 
 ### Pelo navegador
 
-Se quiser apagar o progresso salvo, limpe os dados do site no navegador ou abra a aplicacao em janela anonima.
+Se quiser apagar o progresso salvo, limpe os dados do site no navegador ou abra a aplicação em janela anônima.
 
 ---
 
-## Como encerrar a aplicacao
+## Como encerrar a aplicação
 
 Quando terminar de usar:
 
@@ -365,9 +365,9 @@ Ctrl + C
 
 ---
 
-## Estrutura basica do projeto
+## Estrutura básica do projeto
 
-Voce nao precisa mexer nesses arquivos para usar a aplicacao, mas eles sao os principais:
+Você não precisa mexer nesses arquivos para usar a aplicação, mas eles são os principais:
 
 ```text
 Encceja/
@@ -395,4 +395,4 @@ npm.cmd run build:data
 npm.cmd run dev
 ```
 
-Se a pessoa seguir esses passos nessa ordem, a aplicacao deve funcionar normalmente no Windows.
+Se a pessoa seguir esses passos nessa ordem, a aplicação deve funcionar normalmente no Windows.
