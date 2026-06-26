@@ -2,6 +2,15 @@ import { loadExamData } from './modules/data-service.js';
 import { QuizStore } from './modules/quiz-store.js';
 import { QuizUI } from './modules/ui.js';
 
+function escapeHtml(text) {
+  return String(text ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
 async function main() {
   const payload = await loadExamData();
   const store = new QuizStore(payload);
@@ -14,10 +23,12 @@ async function main() {
 main().catch((error) => {
   console.error(error);
   document.body.innerHTML = `
-    <main style="padding: 32px; font-family: Arial, sans-serif;">
-      <h1>Falha ao carregar a aplicacao</h1>
-      <p>${error.message}</p>
-      <p>Execute <code>npm.cmd run build:data</code> e recarregue a pagina.</p>
+    <main class="fallback-view">
+      <section class="fallback-card" role="alert">
+        <h1>Falha ao carregar a aplicação</h1>
+        <p>${escapeHtml(error.message)}</p>
+        <p>Execute <code>npm.cmd run build:data</code> e recarregue a página.</p>
+      </section>
     </main>
   `;
 });

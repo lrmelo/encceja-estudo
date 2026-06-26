@@ -38,6 +38,14 @@ function normalizeView(view) {
   return VIEW_QUIZ;
 }
 
+function normalizeReturnView(view) {
+  if ([VIEW_EXAM_REVIEW, VIEW_FINAL_SUMMARY].includes(view)) {
+    return view;
+  }
+
+  return VIEW_FINAL_SUMMARY;
+}
+
 export class QuizStore {
   constructor(payload) {
     this.payload = payload;
@@ -63,6 +71,8 @@ export class QuizStore {
       currentIndex: 0,
       currentView: VIEW_QUIZ,
       reviewExamId: null,
+      reviewReturnExamId: null,
+      wrongReview: null,
       correctionMode: CORRECTION_MODE_EXAM_END,
       answers: buildInitialAnswers(this.questions),
     };
@@ -112,17 +122,65 @@ export class QuizStore {
       const reviewExamId = this.examById.has(parsedState.reviewExamId)
         ? parsedState.reviewExamId
         : null;
+      const currentIndex = clampIndex(Number(parsedState.currentIndex) || 0, this.questions.length - 1);
+      const wrongReview =
+        currentView === VIEW_QUIZ
+          ? this.normalizeWrongReview(parsedState.wrongReview, currentIndex, answers)
+          : null;
+      const currentQuestion = this.questions[currentIndex];
+      const reviewReturnExamId =
+        currentView === VIEW_QUIZ &&
+        this.examById.has(parsedState.reviewReturnExamId) &&
+        currentQuestion.examId === parsedState.reviewReturnExamId
+          ? parsedState.reviewReturnExamId
+          : null;
 
       return {
-        currentIndex: clampIndex(Number(parsedState.currentIndex) || 0, this.questions.length - 1),
+        currentIndex,
         currentView: currentView === VIEW_EXAM_REVIEW && !reviewExamId ? VIEW_QUIZ : currentView,
         reviewExamId: currentView === VIEW_EXAM_REVIEW ? reviewExamId : null,
+        reviewReturnExamId,
+        wrongReview,
         correctionMode,
         answers,
       };
     } catch {
       return fallback;
     }
+  }
+
+  normalizeWrongReview(rawWrongReview, currentIndex, answers = this.state?.answers ?? {}) {
+    if (!rawWrongReview || !Array.isArray(rawWrongReview.questionIds)) {
+      return null;
+    }
+
+    const questionIds = rawWrongReview.questionIds.filter((questionId) => {
+      const question = this.questionById.get(questionId);
+      if (!question) {
+        return false;
+      }
+
+      const record = answers[questionId];
+      return record?.confirmed && record.revealed && !record.isCorrect;
+    });
+
+    if (!questionIds.length || !questionIds.includes(this.questions[currentIndex].id)) {
+      return null;
+    }
+
+    const returnView = normalizeReturnView(rawWrongReview.returnView);
+    const returnExamId = this.examById.has(rawWrongReview.returnExamId)
+      ? rawWrongReview.returnExamId
+      : null;
+
+    return {
+      questionIds,
+      sourceExamId: this.examById.has(rawWrongReview.sourceExamId)
+        ? rawWrongReview.sourceExamId
+        : null,
+      returnView: returnView === VIEW_EXAM_REVIEW && !returnExamId ? VIEW_FINAL_SUMMARY : returnView,
+      returnExamId,
+    };
   }
 
   save() {
@@ -197,6 +255,17 @@ export class QuizStore {
     });
   }
 
+  getWrongQuestions(examId = null) {
+    return this.questions.filter((question) => {
+      if (examId && question.examId !== examId) {
+        return false;
+      }
+
+      const record = this.getQuestionRecord(question.id);
+      return record.confirmed && record.revealed && !record.isCorrect;
+    });
+  }
+
   getNextExamId(examId) {
     const examIndex = this.exams.findIndex((exam) => exam.id === examId);
     return this.exams[examIndex + 1]?.id || null;
@@ -208,6 +277,46 @@ export class QuizStore {
 
   isImmediateMode() {
     return this.state.correctionMode === CORRECTION_MODE_IMMEDIATE;
+  }
+
+  isWrongReviewActive() {
+    return Boolean(this.state.wrongReview?.questionIds?.length);
+  }
+
+  getWrongReviewState() {
+    if (!this.isWrongReviewActive()) {
+      return null;
+    }
+
+    const questionIds = this.state.wrongReview.questionIds;
+    const currentQuestion = this.getCurrentQuestion();
+    const currentPosition = questionIds.indexOf(currentQuestion.id);
+
+    if (currentPosition === -1) {
+      return null;
+    }
+
+    return {
+      ...this.state.wrongReview,
+      questionIds,
+      position: currentPosition + 1,
+      total: questionIds.length,
+      hasPrevious: currentPosition > 0,
+      hasNext: currentPosition < questionIds.length - 1,
+    };
+  }
+
+  getExamReviewReturnState() {
+    if (this.isWrongReviewActive() || !this.state.reviewReturnExamId) {
+      return null;
+    }
+
+    const currentQuestion = this.getCurrentQuestion();
+    if (currentQuestion.examId !== this.state.reviewReturnExamId) {
+      return null;
+    }
+
+    return this.examById.get(this.state.reviewReturnExamId) || null;
   }
 
   hasPendingResults() {
@@ -283,6 +392,77 @@ export class QuizStore {
     this.save();
   }
 
+  startWrongReview({ examId = null, returnView = VIEW_FINAL_SUMMARY, returnExamId = null } = {}) {
+    const wrongQuestions = this.getWrongQuestions(examId);
+
+    if (!wrongQuestions.length) {
+      return false;
+    }
+
+    const firstQuestion = wrongQuestions[0];
+    this.clearNotice();
+    this.state.wrongReview = {
+      questionIds: wrongQuestions.map((question) => question.id),
+      sourceExamId: examId,
+      returnView: normalizeReturnView(returnView),
+      returnExamId,
+    };
+    this.state.currentIndex = this.questionIndexById.get(firstQuestion.id);
+    this.state.currentView = VIEW_QUIZ;
+    this.state.reviewExamId = null;
+    this.state.reviewReturnExamId = null;
+    this.save();
+
+    return true;
+  }
+
+  endWrongReview() {
+    const wrongReview = this.state.wrongReview;
+    this.clearNotice();
+    this.state.wrongReview = null;
+    this.state.reviewReturnExamId = null;
+
+    if (
+      wrongReview?.returnView === VIEW_EXAM_REVIEW &&
+      wrongReview.returnExamId &&
+      this.examById.has(wrongReview.returnExamId)
+    ) {
+      this.state.currentView = VIEW_EXAM_REVIEW;
+      this.state.reviewExamId = wrongReview.returnExamId;
+      this.save();
+      return;
+    }
+
+    if (wrongReview?.returnView === VIEW_FINAL_SUMMARY) {
+      this.state.currentView = VIEW_FINAL_SUMMARY;
+      this.state.reviewExamId = null;
+      this.save();
+      return;
+    }
+
+    this.state.currentView = VIEW_QUIZ;
+    this.state.reviewExamId = null;
+    this.save();
+  }
+
+  goToWrongReviewOffset(offset) {
+    const wrongReview = this.getWrongReviewState();
+
+    if (!wrongReview) {
+      this.state.wrongReview = null;
+      this.save();
+      return false;
+    }
+
+    const nextPosition = wrongReview.position - 1 + offset;
+    if (nextPosition < 0 || nextPosition >= wrongReview.total) {
+      return false;
+    }
+
+    this.goToQuestionById(wrongReview.questionIds[nextPosition], { keepWrongReview: true });
+    return true;
+  }
+
   selectOption(optionId) {
     const question = this.getCurrentQuestion();
     const record = this.getQuestionRecord(question.id);
@@ -313,30 +493,51 @@ export class QuizStore {
     return true;
   }
 
-  goToQuestion(index) {
+  goToQuestion(index, { keepWrongReview = false, keepReviewReturn = false, reviewReturnExamId = null } = {}) {
     this.clearNotice();
-    this.state.currentIndex = clampIndex(index, this.questions.length - 1);
+    const nextIndex = clampIndex(index, this.questions.length - 1);
+    const nextQuestion = this.questions[nextIndex];
+    const activeReturnExamId = this.state.reviewReturnExamId;
+    const requestedReturnExamId = this.examById.has(reviewReturnExamId) ? reviewReturnExamId : null;
+    const preservedReturnExamId =
+      keepReviewReturn && activeReturnExamId && nextQuestion.examId === activeReturnExamId
+        ? activeReturnExamId
+        : null;
+
+    this.state.currentIndex = nextIndex;
     this.state.currentView = VIEW_QUIZ;
     this.state.reviewExamId = null;
+    if (!keepWrongReview) {
+      this.state.wrongReview = null;
+    }
+    this.state.reviewReturnExamId =
+      requestedReturnExamId && nextQuestion.examId === requestedReturnExamId
+        ? requestedReturnExamId
+        : preservedReturnExamId;
     this.save();
   }
 
-  goToQuestionById(questionId) {
+  goToQuestionById(questionId, options) {
     const index = this.questionIndexById.get(questionId);
     if (index !== undefined) {
-      this.goToQuestion(index);
+      this.goToQuestion(index, options);
     }
   }
 
-  goToFirstQuestionOfExam(examId) {
+  goToFirstQuestionOfExam(examId, options) {
     const index = this.getFirstQuestionIndexOfExam(examId);
     if (index >= 0) {
-      this.goToQuestion(index);
+      this.goToQuestion(index, options);
     }
   }
 
   previous() {
-    this.goToQuestion(this.state.currentIndex - 1);
+    if (this.isWrongReviewActive()) {
+      this.goToWrongReviewOffset(-1);
+      return;
+    }
+
+    this.goToQuestion(this.state.currentIndex - 1, { keepReviewReturn: true });
   }
 
   openExamReview(examId) {
@@ -344,6 +545,8 @@ export class QuizStore {
     this.revealExamResults(examId);
     this.state.currentView = VIEW_EXAM_REVIEW;
     this.state.reviewExamId = examId;
+    this.state.reviewReturnExamId = null;
+    this.state.wrongReview = null;
     this.save();
   }
 
@@ -352,11 +555,25 @@ export class QuizStore {
     this.revealAllConfirmedAnswers();
     this.state.currentView = VIEW_FINAL_SUMMARY;
     this.state.reviewExamId = null;
+    this.state.reviewReturnExamId = null;
+    this.state.wrongReview = null;
     this.save();
   }
 
   next() {
     this.clearNotice();
+
+    if (this.isWrongReviewActive()) {
+      const wrongReview = this.getWrongReviewState();
+      if (wrongReview?.hasNext) {
+        this.goToWrongReviewOffset(1);
+        return { type: 'wrong-review-next' };
+      }
+
+      this.endWrongReview();
+      return { type: 'wrong-review-complete' };
+    }
+
     const currentQuestion = this.getCurrentQuestion();
     const currentExamId = currentQuestion.examId;
 
@@ -368,7 +585,7 @@ export class QuizStore {
         if (firstUnconfirmedIndex >= 0) {
           this.goToQuestion(firstUnconfirmedIndex);
           this.setNotice(
-            `Faltam ${unconfirmedCount} questoes desta prova para finalizar. Complete essas respostas antes de ver o gabarito.`,
+            `Faltam ${unconfirmedCount} questões desta prova para finalizar. Complete essas respostas antes de ver o gabarito.`,
             'warning'
           );
         }
@@ -387,7 +604,7 @@ export class QuizStore {
       return { type: 'final-summary' };
     }
 
-    this.goToQuestion(this.state.currentIndex + 1);
+    this.goToQuestion(this.state.currentIndex + 1, { keepReviewReturn: true });
     return { type: 'next-question' };
   }
 
@@ -407,6 +624,8 @@ export class QuizStore {
     this.clearNotice();
     this.state.currentView = VIEW_QUIZ;
     this.state.reviewExamId = null;
+    this.state.reviewReturnExamId = null;
+    this.state.wrongReview = null;
     this.save();
   }
 
@@ -427,9 +646,11 @@ export class QuizStore {
     this.state.currentIndex = firstQuestionIndex >= 0 ? firstQuestionIndex : 0;
     this.state.currentView = VIEW_QUIZ;
     this.state.reviewExamId = null;
+    this.state.reviewReturnExamId = null;
+    this.state.wrongReview = null;
 
     const exam = this.examById.get(examId);
-    this.setNotice(`Prova ${exam.shortTitle} reiniciada. Voce pode responder novamente desde a primeira questao.`, 'info');
+    this.setNotice(`Prova ${exam.shortTitle} reiniciada. Você pode responder novamente desde a primeira questão.`, 'info');
     this.save();
   }
 

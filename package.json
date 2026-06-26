@@ -6,7 +6,9 @@
   "scripts": {
     "build:data": "node scripts/build-data.js",
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:ui": "playwright test",
+    "test:ui:headed": "playwright test --headed"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +16,8 @@
   "type": "commonjs",
   "dependencies": {
     "pdf-parse": "^2.4.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
   }
 }

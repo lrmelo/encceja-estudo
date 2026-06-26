@@ -11,8 +11,8 @@ const FORCE_IMAGES = process.argv.includes('--force-images');
 const EXAMS = [
   {
     id: 'ciencias-natureza',
-    title: 'Ciencias da Natureza e suas Tecnologias',
-    shortTitle: 'Ciencias da Natureza',
+    title: 'Ciências da Natureza e suas Tecnologias',
+    shortTitle: 'Ciências da Natureza',
     provaFile: '2020_PV_EM_ciencias_natureza.pdf',
     gabaritoFile: '2020_GB_EM_ciencias_natureza.pdf',
     firstQuestion: 1,
@@ -20,7 +20,7 @@ const EXAMS = [
   },
   {
     id: 'linguagens',
-    title: 'Linguagens, Codigos e suas Tecnologias',
+    title: 'Linguagens, Códigos e suas Tecnologias',
     shortTitle: 'Linguagens',
     provaFile: '2020_PV_EM_linguagens.pdf',
     gabaritoFile: '2020_GB_EM_linguagens.pdf',
@@ -29,8 +29,8 @@ const EXAMS = [
   },
   {
     id: 'matematica',
-    title: 'Matematica e suas Tecnologias',
-    shortTitle: 'Matematica',
+    title: 'Matemática e suas Tecnologias',
+    shortTitle: 'Matemática',
     provaFile: '2020_PV_EM_matematica.pdf.pdf',
     gabaritoFile: '2020_GB_EM_matematica.pdf',
     firstQuestion: 31,
@@ -181,7 +181,7 @@ function parseAnswerKey(text, firstQuestion, lastQuestion) {
 
   for (let number = firstQuestion; number <= lastQuestion; number += 1) {
     if (!answerMap[number]) {
-      throw new Error(`Gabarito incompleto para a questao ${number}.`);
+      throw new Error(`Gabarito incompleto para a questão ${number}.`);
     }
   }
 
@@ -291,7 +291,7 @@ async function buildExam(config) {
     const expectedTotal = config.lastQuestion - config.firstQuestion + 1;
     if (questions.length !== expectedTotal) {
       throw new Error(
-        `Quantidade de questoes inesperada em ${config.provaFile}: ${questions.length}/${expectedTotal}.`
+        `Quantidade de questões inesperada em ${config.provaFile}: ${questions.length}/${expectedTotal}.`
       );
     }
 

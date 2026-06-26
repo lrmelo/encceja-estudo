@@ -8,6 +8,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Test artifacts
+playwright-report/
+test-results/
+
 # Generated application data
 public/data/exams.json
 public/assets/pages/

@@ -4,15 +4,68 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ENCCEJA 2020</title>
+    <script>
+      (() => {
+        try {
+          const theme = window.localStorage.getItem('encceja-2020-theme');
+          document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="./styles/main.css" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
     <div class="app-shell">
-      <aside class="sidebar">
+      <main id="main-content" class="main-content" tabindex="-1">
+        <section id="quiz-view" class="quiz-view" aria-labelledby="question-title">
+          <header class="question-header">
+            <div>
+              <p id="question-context" class="question-context"></p>
+              <h2 id="question-title" class="question-title" tabindex="-1"></h2>
+            </div>
+            <div class="question-meta">
+              <span id="page-badge" class="badge"></span>
+            </div>
+          </header>
+
+          <div class="question-layout">
+            <section class="question-panel" aria-live="polite">
+              <div id="wrong-review-banner" class="wrong-review-banner" aria-live="polite" hidden></div>
+              <div id="review-return-banner" class="review-return-banner" aria-live="polite" hidden></div>
+              <div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+              <div id="question-stem" class="question-stem"></div>
+              <div id="options" class="options"></div>
+            </section>
+
+            <aside class="reference-panel">
+              <div class="reference-header">
+                <h2>Página da prova</h2>
+                <button id="zoom-button" class="secondary-button" type="button">Ampliar</button>
+              </div>
+              <button id="page-preview-button" class="page-preview-button" type="button">
+                <img id="page-preview" class="page-preview" alt="Página original da prova" decoding="async" />
+              </button>
+            </aside>
+          </div>
+
+          <footer class="control-bar" aria-label="Navegação da questão">
+            <button id="previous-button" class="secondary-button" type="button">Anterior</button>
+            <button id="confirm-button" class="primary-button" type="button">Confirmar</button>
+            <button id="next-button" class="primary-button" type="button">Próxima</button>
+          </footer>
+        </section>
+
+        <section id="summary-view" class="summary-view" hidden></section>
+      </main>
+
+      <aside class="sidebar" aria-label="Painel de progresso e navegação">
         <div class="sidebar-top">
           <p class="eyebrow">ENCCEJA 2020</p>
-          <h1 class="app-title">Pratica de Provas</h1>
-          <p class="app-subtitle">Treine as tres provas objetivas e escolha quando ver o gabarito.</p>
+          <h1 class="app-title">Prática guiada de provas</h1>
+          <p class="app-subtitle">Treine as três provas objetivas com controle de progresso e revisão.</p>
         </div>
 
         <section class="summary-strip" aria-label="Resumo de progresso">
@@ -28,20 +81,26 @@
             <span id="accuracy-label" class="metric-label">Taxa</span>
             <strong id="accuracy-rate">0%</strong>
           </div>
+          <div class="summary-progress" aria-hidden="true">
+            <span id="summary-progress-fill"></span>
+          </div>
+          <p id="summary-progress-label" class="summary-progress-label">0 de 90 questões respondidas</p>
         </section>
 
-        <section class="mode-panel" aria-label="Modo de correcao">
+        <section class="mode-panel" aria-label="Modo de correção">
           <div class="section-heading">
-            <h2>Correcao</h2>
+            <h2>Correção</h2>
             <span class="section-label">Escolha quando ver o gabarito</span>
           </div>
 
-          <div class="mode-toggle" role="group" aria-label="Modo de correcao">
+          <div class="mode-toggle" role="group" aria-label="Modo de correção">
             <button
               id="mode-immediate-button"
               class="mode-toggle-button"
               type="button"
               data-mode="immediate"
+              aria-pressed="false"
+              aria-describedby="mode-help"
             >
               Mostrar na hora
             </button>
@@ -50,6 +109,8 @@
               class="mode-toggle-button"
               type="button"
               data-mode="exam-end"
+              aria-pressed="true"
+              aria-describedby="mode-help"
             >
               Mostrar no fim da prova
             </button>
@@ -58,75 +119,67 @@
           <p id="mode-help" class="mode-help"></p>
         </section>
 
+        <section class="theme-panel" aria-label="Apar&ecirc;ncia">
+          <div class="section-heading">
+            <h2>Apar&ecirc;ncia</h2>
+            <span class="section-label">Tema da interface</span>
+          </div>
+
+          <div class="theme-toggle" role="group" aria-label="Tema da interface">
+            <button
+              id="theme-light-button"
+              class="theme-toggle-button"
+              type="button"
+              data-theme-option="light"
+              aria-pressed="true"
+              aria-describedby="theme-help"
+            >
+              Claro
+            </button>
+            <button
+              id="theme-dark-button"
+              class="theme-toggle-button"
+              type="button"
+              data-theme-option="dark"
+              aria-pressed="false"
+              aria-describedby="theme-help"
+            >
+              Escuro
+            </button>
+          </div>
+
+          <p id="theme-help" class="mode-help">Use o tema escuro para estudar com menos brilho.</p>
+        </section>
+
         <nav id="exam-nav" class="exam-nav" aria-label="Provas"></nav>
 
         <section class="question-map-section">
           <div class="section-heading">
-            <h2>Questoes</h2>
+            <h2>Questões</h2>
             <span id="current-exam-label" class="section-label"></span>
           </div>
-          <div id="question-map" class="question-map" aria-label="Mapa de questoes"></div>
+          <div id="question-map" class="question-map" aria-label="Mapa de questões"></div>
         </section>
 
         <section class="sidebar-actions-section">
           <div class="section-heading">
-            <h2>Acoes</h2>
+            <h2>Ações</h2>
             <span class="section-label">Prova atual</span>
           </div>
-          <button id="reset-current-exam-button" class="secondary-button sidebar-action-button" type="button">
+          <button id="reset-current-exam-button" class="secondary-button danger-button sidebar-action-button" type="button">
             Reiniciar esta prova
           </button>
           <p id="reset-current-exam-help" class="mode-help"></p>
         </section>
       </aside>
-
-      <main class="main-content">
-        <section id="quiz-view" class="quiz-view">
-          <header class="question-header">
-            <div>
-              <p id="question-context" class="question-context"></p>
-              <h2 id="question-title" class="question-title"></h2>
-            </div>
-            <div class="question-meta">
-              <span id="page-badge" class="badge"></span>
-            </div>
-          </header>
-
-          <div class="question-layout">
-            <section class="question-panel" aria-live="polite">
-              <div id="feedback" class="feedback" hidden></div>
-              <div id="question-stem" class="question-stem"></div>
-              <div id="options" class="options"></div>
-            </section>
-
-            <aside class="reference-panel">
-              <div class="reference-header">
-                <h2>Pagina da prova</h2>
-                <button id="zoom-button" class="secondary-button" type="button">Ampliar</button>
-              </div>
-              <button id="page-preview-button" class="page-preview-button" type="button">
-                <img id="page-preview" class="page-preview" alt="Pagina original da prova" />
-              </button>
-            </aside>
-          </div>
-
-          <footer class="control-bar">
-            <button id="previous-button" class="secondary-button" type="button">Anterior</button>
-            <button id="confirm-button" class="primary-button" type="button">Confirmar</button>
-            <button id="next-button" class="primary-button" type="button">Proxima</button>
-          </footer>
-        </section>
-
-        <section id="summary-view" class="summary-view" hidden></section>
-      </main>
     </div>
 
-    <dialog id="image-dialog" class="image-dialog">
+    <dialog id="image-dialog" class="image-dialog" aria-labelledby="dialog-title">
       <div class="dialog-header">
         <p id="dialog-title" class="dialog-title"></p>
-        <button id="close-dialog-button" class="secondary-button" type="button">Fechar</button>
+        <button id="close-dialog-button" class="secondary-button" type="button" autofocus>Fechar</button>
       </div>
-      <img id="dialog-image" class="dialog-image" alt="Pagina ampliada da prova" />
+      <img id="dialog-image" class="dialog-image" alt="Página ampliada da prova" decoding="async" />
     </dialog>
 
     <script type="module" src="./js/app.js"></script>
